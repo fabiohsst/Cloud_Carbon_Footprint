@@ -7,7 +7,7 @@ venv/
 env/
 
 # Environment files (from your project)
-airflow/.env
+cloud_function/.env
 dashboard/.env
 
 # Operating System files
