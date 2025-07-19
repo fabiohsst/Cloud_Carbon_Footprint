@@ -20,8 +20,30 @@ As companies increasingly adopt multi-cloud strategies (using services from both
 
 This project is built on a modern, event-driven, and serverless architecture to ensure it is both powerful and cost-effective.
 
-*Your Architecture Diagram Here*
-*suggestion: create a simple diagram showing the flow below and add it here*
+┌──────────────────────────┐      ┌───────────────────────────┐      ┌────────────────────────┐
+│                          │      │                           │      │                        │
+│   User (Web Browser)     ├─────►│  Streamlit Community Cloud  │      │   OpenAI API (LLM)     │
+│                          │      │  (Public Dashboard)       │◄─────┤                        │
+└──────────────────────────┘      │                           │      │                        │
+                                  └─────────────┬─────────────┘      └────────────────────────┘
+                                                │
+                                                │ (Queries in Cypher)
+                                                │
+                                  ┌─────────────▼─────────────┐
+                                  │                           │
+                                  │   Neo4j AuraDB (Free Tier)  │
+                                  │   (Graph Database)        │
+                                  │                           │
+                                  └─────────────▲─────────────┘
+                                                │
+                                                │ (Loads transformed data)
+                                                │
+┌──────────────────────────┐      ┌─────────────┴─────────────┐      ┌────────────────────────┐
+│                          │      │                           │      │                        │
+│ Cloud Scheduler (Trigger)├─────►│  Google Cloud Function    │◄─────┤ Google Cloud Storage   │
+│ (e.g., "Run daily")      │      │  (ETL: Extract, Transform)  │      │ (Mock CSV Files)       │
+│                          │      │                           │      │                        │
+└──────────────────────────┘      └───────────────────────────┘      └────────────────────────┘
 
 1.  **Data Storage:** Mock CSV reports for AWS and GCP are stored in a **Google Cloud Storage** bucket.
 2.  **Scheduling:** A **Google Cloud Scheduler** job runs daily, triggering the ETL pipeline.
