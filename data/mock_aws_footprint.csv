@@ -1,0 +1,26 @@
+billing_period,aws_account_id,aws_region,service,emissions_scope_1,emissions_scope_2_market_based
+2025-01,123456789012,ap-southeast-2,Amazon EC2,0.08,24.1
+2025-01,123456789012,ap-southeast-2,Amazon RDS,0.03,8.1
+2025-02,123456789012,ap-southeast-2,Amazon EC2,0.09,25.9
+2025-02,123456789012,ap-southeast-2,Amazon RDS,0.03,8.8
+2025-03,123456789012,ap-southeast-2,Amazon EC2,0.10,26.5
+2025-03,123456789012,ap-southeast-2,Amazon RDS,0.04,9.2
+2025-04,123456789012,ap-southeast-2,Amazon EC2,0.09,26.1
+2025-04,123456789012,ap-southeast-2,Amazon RDS,0.03,9.0
+2025-05,123456789012,ap-southeast-2,Amazon EC2,0.09,25.6
+2025-05,123456789012,ap-southeast-2,Amazon RDS,0.03,8.9
+2025-06,123456789012,ap-southeast-2,Amazon EC2,0.09,25.6
+2025-06,123456789012,ap-southeast-2,Amazon S3,0.005,1.2
+2025-06,123456789012,ap-southeast-2,Amazon RDS,0.03,8.9
+2025-07,123456789012,ap-southeast-2,Amazon EC2,0.11,28.2
+2025-07,123456789012,ap-southeast-2,Amazon RDS,0.04,10.1
+2025-08,123456789012,ap-southeast-2,Amazon EC2,0.12,29.1
+2025-08,123456789012,ap-southeast-2,Amazon RDS,0.05,10.5
+2025-09,123456789012,ap-southeast-2,Amazon EC2,0.10,27.5
+2025-09,123456789012,ap-southeast-2,Amazon RDS,0.04,9.8
+2025-10,123456789012,ap-southeast-2,Amazon EC2,0.13,30.5
+2025-10,123456789012,ap-southeast-2,Amazon RDS,0.06,11.2
+2025-11,123456789012,ap-southeast-2,Amazon EC2,0.14,32.1
+2025-11,123456789012,ap-southeast-2,Amazon RDS,0.07,12.5
+2025-12,123456789012,ap-southeast-2,Amazon EC2,0.15,34.2
+2025-12,123456789012,ap-southeast-2,Amazon RDS,0.08,13.8

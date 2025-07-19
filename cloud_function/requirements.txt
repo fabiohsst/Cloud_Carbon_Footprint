@@ -1,0 +1,5 @@
+pandas
+gcsfs
+google-cloud-storage
+# For connecting to Neo4j
+neo4j

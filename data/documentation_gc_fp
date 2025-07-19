@@ -1,0 +1,20 @@
+Google Cloud Data (mock_gcp_footprint.csv)
+project.id: The unique, system-generated ID for a Google Cloud project. Example: paysydney-prod-4812.
+
+project.name: The human-friendly name for the project. Example: PaySydney Production.
+
+location.region: The geographical region where the resources were used. Example: australia-southeast1 for Sydney.
+
+service.description: The Google Cloud service that generated the emissions. Example: Compute Engine, Cloud SQL.
+
+carbon_footprint_kgco2e.scope1: Direct GHG emissions from sources owned or controlled by Google (in kg of CO₂ equivalent).
+
+carbon_footprint_kgco2e.scope2_market_based: Emissions from the generation of electricity that Google purchases. This is the largest source of emissions for most cloud services.
+
+carbon_footprint_kgco2e.scope3: Other indirect emissions from Google's value chain, such as hardware manufacturing and business travel.
+
+usage_date.year: The year the usage occurred.
+
+usage_date.month: The month the usage occurred.
+
+usage_date.day: The day the usage occurred (often aggregated to the first of the month in reports).

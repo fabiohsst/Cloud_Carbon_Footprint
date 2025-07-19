@@ -1,0 +1,12 @@
+AWS Data (mock_aws_footprint.csv)
+billing_period: The month for which the emissions data is reported, in YYYY-MM format.
+
+aws_account_id: The unique ID for the AWS account.
+
+aws_region: The AWS region where the resources were used. Example: ap-southeast-2 for Sydney.
+
+service: The AWS service that generated the emissions. Example: Amazon EC2, Amazon RDS.
+
+emissions_scope_1: Direct GHG emissions from sources owned or controlled by Amazon (in metric tons of CO₂ equivalent).
+
+emissions_scope_2_market_based: Emissions from the generation of electricity purchased by Amazon. This reflects the specific energy mix AWS procures for its data centers, including renewable energy from PPAs.

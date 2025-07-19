@@ -1,0 +1,14 @@
+# Python cache
+__pycache__/
+*.pyc
+
+# Virtual Environments
+venv/
+env/
+
+# Environment files (from your project)
+airflow/.env
+dashboard/.env
+
+# Operating System files
+.DS_Store
