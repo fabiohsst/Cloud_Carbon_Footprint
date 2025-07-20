@@ -41,17 +41,93 @@ def init_chain():
             allow_dangerous_requests=True
         )
         st.sidebar.success("Successfully connected to the database and LLM.")
-        return chain, graph
+        return chain, graph, llm
 
     except Exception as e:
         st.sidebar.error(f"Failed to connect: {e}", icon="🚨")
-        return None, None
+        return None, None, None
 
-chain, graph = init_chain()
+chain, graph, llm = init_chain()
 
-# --- Natural Language Q&A Interface ---
-st.header("Ask a question about your cloud carbon footprint:")
-question = st.text_input("e.g., What is our total cloud carbon footprint?", placeholder="Ask your question here...")
+# --- New High-Level Reporting Interface (Moved to Top) ---
+st.header("Generate a High-Level Report")
+
+start_date_report = st.date_input("Start date", value=date(2025, 1, 1), key="report_start")
+end_date_report = st.date_input("End date", value=date(2025, 12, 31), key="report_end")
+
+def generate_aggregated_report(graph_connection, start, end):
+    """
+    Generates an aggregated report for graphing.
+    """
+    cypher_query = """
+    MATCH (cp:CloudProvider)-[:HAS_PROJECT]->(p:Project)-[:GENERATED]->(cr:CarbonReport)
+    WHERE date({year: cr.year, month: cr.month, day: 1}) >= date($start_date)
+      AND date({year: cr.year, month: cr.month, day: 1}) <= date($end_date)
+    RETURN
+      cp.name AS provider,
+      cr.year AS year,
+      cr.month AS month,
+      sum(cr.scope1 + cr.scope2 + cr.scope3) AS total_emissions
+    ORDER BY year, month, provider
+    """
+    report_df = graph_connection.query(cypher_query, params={"start_date": start.isoformat(), "end_date": end.isoformat()})
+    return report_df
+
+def get_llm_insights(report_dataframe, llm_connection):
+    """
+    Sends the report data to an LLM to generate insights.
+    """
+    # Convert the DataFrame to a string format for the LLM
+    data_string = report_dataframe.to_string()
+    
+    prompt = f"""
+    You are a senior data analyst specializing in cloud carbon footprints. 
+    Based on the following data, provide a high-level summary and three key actionable insights.
+    The data shows monthly carbon emissions (in kgCO₂e) by cloud provider.
+
+    Data:
+    {data_string}
+
+    Analysis:
+    """
+    
+    response = llm_connection.invoke(prompt)
+    return response.content
+
+
+if st.button("Generate High-Level Report"):
+    if graph and llm:
+        with st.spinner("Generating your report and insights..."):
+            try:
+                # 1. Get aggregated data
+                agg_data = generate_aggregated_report(graph, start_date_report, end_date_report)
+                
+                if not agg_data.empty:
+                    st.subheader("Monthly Emissions by Provider")
+                    
+                    # Pivot data for charting
+                    chart_data = agg_data.pivot(index='month', columns='provider', values='total_emissions')
+                    
+                    # 2. Create a graph
+                    st.bar_chart(chart_data)
+                    
+                    # 3. Get LLM-generated insights
+                    st.subheader("AI-Generated Insights")
+                    insights = get_llm_insights(agg_data, llm)
+                    st.markdown(insights)
+                else:
+                    st.warning("No data found for the selected period.")
+
+            except Exception as e:
+                st.error(f"An error occurred while generating the report: {e}", icon="🚨")
+    else:
+        st.error("The application is not connected. Please check your credentials.")
+
+st.divider()
+
+# --- Natural Language Q&A Interface (Moved to Bottom) ---
+st.header("Ask a Specific Question")
+question = st.text_input("e.g., What is our total cloud carbon footprint?", placeholder="Ask your question here...", key="qa_input")
 
 if question:
     st.write(f"**Your question:** {question}")
@@ -63,54 +139,5 @@ if question:
                 st.write(response.get("result", "No result found."))
             except Exception as e:
                 st.error(f"An error occurred: {e}", icon="🚨")
-    else:
-        st.error("The application is not connected. Please check your credentials.")
-
-st.divider()
-
-# --- New Reporting Interface ---
-st.header("Generate a Detailed Report")
-
-# Date input widgets for the report
-start_date = st.date_input("Start date", value=date(2025, 1, 1))
-end_date = st.date_input("End date", value=date(2025, 12, 31))
-
-def generate_report(graph_connection, start, end):
-    """
-    Generates a detailed report by running a specific Cypher query.
-    """
-    cypher_query = """
-    MATCH (c:Company)-[:USES_PROVIDER]->(cp:CloudProvider)-[:HAS_PROJECT]->(p:Project)-[:GENERATED]->(cr:CarbonReport)
-    WHERE date({year: cr.year, month: cr.month, day: 1}) >= date($start_date)
-      AND date({year: cr.year, month: cr.month, day: 1}) <= date($end_date)
-    RETURN
-      cp.name AS cloud_provider,
-      p.id AS project_id,
-      cr.service AS service,
-      cr.region AS region,
-      cr.year AS year,
-      cr.month AS month,
-      (cr.scope1 + cr.scope2 + cr.scope3) AS total_emissions
-    ORDER BY total_emissions DESC
-    """
-    
-    # Use the graph object's query method, which returns a pandas DataFrame
-    report_df = graph_connection.query(cypher_query, params={"start_date": start.isoformat(), "end_date": end.isoformat()})
-    return report_df
-
-if st.button("Generate Report"):
-    if graph:
-        with st.spinner("Generating your report..."):
-            try:
-                report_data = generate_report(graph, start_date, end_date)
-                st.success("Report generated successfully!", icon="📊")
-                st.dataframe(report_data)
-
-                # Display a summary
-                total_emissions = report_data['total_emissions'].sum()
-                st.metric(label="Total Emissions for Period (kgCO₂e)", value=f"{total_emissions:,.2f}")
-
-            except Exception as e:
-                st.error(f"An error occurred while generating the report: {e}", icon="🚨")
     else:
         st.error("The application is not connected. Please check your credentials.")
