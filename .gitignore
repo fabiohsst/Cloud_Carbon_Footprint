@@ -12,3 +12,6 @@ dashboard/.env
 
 # Operating System files
 .DS_Store
+
+# Ignore project planning documents
+docs/
