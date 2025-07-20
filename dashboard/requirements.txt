@@ -5,3 +5,4 @@ neo4j
 python-dotenv
 langchain-neo4j
 langchain-community
+pandas
