@@ -70,7 +70,8 @@ def generate_aggregated_report(graph_connection, start, end):
       sum(cr.scope1 + cr.scope2 + cr.scope3) AS total_emissions
     ORDER BY year, month, provider
     """
-    report_df = graph_connection.query(cypher_query, params={"start_date": start.isoformat(), "end_date": end.isoformat()})
+    result = graph_connection.query(cypher_query, params={"start_date": start.isoformat(), "end_date": end.isoformat()})
+    report_df = pd.DataFrame(result)
     return report_df
 
 def get_llm_insights(report_dataframe, llm_connection):
